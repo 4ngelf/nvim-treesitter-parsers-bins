@@ -13,6 +13,16 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
     - uses: actions/checkout@v5.0.0
+    - name: Install neovim with chocolatey
+      if: runner.os == "Windows"
+      run: choco install neovim
+    - name: Install neovim manually
+      if: runner.os == "Linux"
+      run: |
+        mkdir -p /opt/nvim-bin
+        curl -Lo /opt/nvim-bin/nvim https://github.com/neovim/neovim/releases/latest/download/nvim-linux-x86_64.appimage
+        chmod u+x /opt/nvim-bin/nvim
+        echo "/opt/nvim-bin" >> "$GITHUB_PATH"
     - uses: MunifTanjim/setup-neovim-action@v1.1.0
     - name: clone nvim-treesitter
       run: |
