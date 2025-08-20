@@ -35,6 +35,6 @@ jobs:
     - name: compress parsers
       run: tar -I zstd -cf ${{ env.OUTPUT_FILE }} -C out .
     - name: upload parsers
-      use: gh release upload  ${{ env.OUTPUT_FILE }} --clobber
+      use: gh release upload latest ${{ env.OUTPUT_FILE }} --clobber
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
