@@ -1,0 +1,25 @@
+name: Package parsers
+
+on:
+  workflow_dispath:
+  schedule:
+  - cron: '0 0 12 1 1/1 ? *'
+
+jobs:
+  compile:
+    strategy:
+      os: [ubuntu-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+    - uses: actions/checkout@v5.0.0
+    - uses: MunifTanjim/setup-neovim-action@v1.1.0
+    - name: clone nvim-treesitter
+      run: |
+        git clone --filter blob:none --branch master https://github.com/nvim-treesitter/nvim-treesitter nvim-treesitter
+    - name: Compile parsers
+      run: |
+        nvim -u install_parsers.lua --headless
+    - uses: actions/upload-artifact@v4.6.2
+      with:
+        name: parsers-${{ runner.arch }}-${{ runner.os }}
+        path: out
