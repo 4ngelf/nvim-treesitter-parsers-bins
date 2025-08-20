@@ -6,11 +6,13 @@ on:
   - cron: '0 0 1 * *'
 
 jobs:
-  compile:
+  build:
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest]
     runs-on: ${{ matrix.os }}
+    env:
+      OUTPUT_FILE: parsers-${{ runner.arch }}-${{ runner.os }}.tar.zst
     steps:
     - uses: actions/checkout@v5.0.0
     - name: Install neovim for Windows
@@ -27,10 +29,12 @@ jobs:
         echo "/opt/nvim-bin" >> "$GITHUB_PATH"
     - name: clone nvim-treesitter
       run: |
-        git clone --filter blob:none --branch master https://github.com/nvim-treesitter/nvim-treesitter nvim-treesitter
+        git clone --depth 1 --filter blob:none --branch master https://github.com/nvim-treesitter/nvim-treesitter nvim-treesitter
     - name: Compile parsers
       run: nvim -u install_parsers.lua --headless
-    - uses: actions/upload-artifact@v4.6.2
-      with:
-        name: parsers-${{ runner.arch }}-${{ runner.os }}
-        path: out
+    - name: compress parsers
+      run: tar -I zstd -cf ${{ env.OUTPUT_FILE }} -C out .
+    - name: upload parsers
+      use: gh release upload  ${{ env.OUTPUT_FILE }} --clobber
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
