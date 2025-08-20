@@ -13,10 +13,12 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
     - uses: actions/checkout@v5.0.0
-    - name: Install neovim with chocolatey
+    - name: Install neovim for Windows
       if: ${{ runner.os == 'Windows' }}
-      run: choco install neovim
-    - name: Install neovim manually
+      run: |
+        choco install neovim
+        echo 'C:\tools\neovim\nvim-win64\bin' | Out-File -FilePath $env:GITHUB_PATH -Append
+    - name: Install neovim for Linux
       if: ${{ runner.os == 'Linux' }}
       run: |
         mkdir -p /opt/nvim-bin
@@ -27,8 +29,7 @@ jobs:
       run: |
         git clone --filter blob:none --branch master https://github.com/nvim-treesitter/nvim-treesitter nvim-treesitter
     - name: Compile parsers
-      run: |
-        nvim -u install_parsers.lua --headless
+      run: nvim -u install_parsers.lua --headless
     - uses: actions/upload-artifact@v4.6.2
       with:
         name: parsers-${{ runner.arch }}-${{ runner.os }}
