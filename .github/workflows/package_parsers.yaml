@@ -3,7 +3,7 @@ name: Package parsers
 on:
   workflow_dispatch:
   schedule:
-  - cron: '0 0 12 1 1/1 ? *'
+  - cron: '0 0 1 * *'
 
 jobs:
   compile:
