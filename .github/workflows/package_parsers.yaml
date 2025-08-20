@@ -23,7 +23,6 @@ jobs:
         curl -Lo /opt/nvim-bin/nvim https://github.com/neovim/neovim/releases/latest/download/nvim-linux-x86_64.appimage
         chmod u+x /opt/nvim-bin/nvim
         echo "/opt/nvim-bin" >> "$GITHUB_PATH"
-    - uses: MunifTanjim/setup-neovim-action@v1.1.0
     - name: clone nvim-treesitter
       run: |
         git clone --filter blob:none --branch master https://github.com/nvim-treesitter/nvim-treesitter nvim-treesitter
