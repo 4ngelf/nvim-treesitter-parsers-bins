@@ -14,10 +14,10 @@ jobs:
     steps:
     - uses: actions/checkout@v5.0.0
     - name: Install neovim with chocolatey
-      if: runner.os == "Windows"
+      if: ${{ runner.os == "Windows" }}
       run: choco install neovim
     - name: Install neovim manually
-      if: runner.os == "Linux"
+      if: ${{ runner.os == "Linux" }}
       run: |
         mkdir -p /opt/nvim-bin
         curl -Lo /opt/nvim-bin/nvim https://github.com/neovim/neovim/releases/latest/download/nvim-linux-x86_64.appimage
