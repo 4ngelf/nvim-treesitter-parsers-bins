@@ -11,8 +11,6 @@ jobs:
       matrix:
         os: [ubuntu-latest, windows-latest]
     runs-on: ${{ matrix.os }}
-    env:
-      OUTPUT_FILE: parsers-${{ runner.arch }}-${{ runner.os }}.tar.zst
     steps:
     - uses: actions/checkout@v5.0.0
     - name: Install neovim for Windows
@@ -32,9 +30,10 @@ jobs:
         git clone --depth 1 --filter blob:none --branch master https://github.com/nvim-treesitter/nvim-treesitter nvim-treesitter
     - name: Compile parsers
       run: nvim -u install_parsers.lua --headless
-    - name: compress parsers
-      run: tar -I zstd -cf ${{ env.OUTPUT_FILE }} -C out .
-    - name: upload parsers
-      use: gh release upload latest ${{ env.OUTPUT_FILE }} --clobber
+    - name: compress and upload parsers
+      run: |
+        tar -I zstd -cf ${{ env.OUTPUT_FILE }} -C out .
+        gh release upload latest ${{ env.OUTPUT_FILE }} --clobber
       env:
+        OUTPUT_FILE: parsers-${{ runner.arch }}-${{ runner.os }}.tar.zst
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
